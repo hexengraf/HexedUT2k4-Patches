@@ -1,0 +1,4 @@
+[submodule "Resources"]
+	path = Resources
+	url = ../HexedUT2k4-Resources
+	branch = master
