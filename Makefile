@@ -15,7 +15,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
 # OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-PROJECT:=HexedUT2k4
+PROJECT:=HexedPatches
 TAG:=vDEV
 OUTDIR:=build
 TAGGEDPKGS:=
@@ -46,13 +46,12 @@ utdirs=$(REQUIREDIRS:%=$(OUTDIR)/%)
 ufiles:=$(pkgs:%=$(OUTDIR)/System/%.u)
 uz2files:=$(TAGGEDPKGS:%=$(OUTDIR)/%$(TAG).u.uz2)
 inifiles:=$(pkgs:%=$(OUTDIR)/%.ini)
-releasezip:=$(OUTDIR)/$(PROJECT)$(TAG).zip
+releasezip:=$(OUTDIR)/$(PROJECT).zip
 toolsdir:=Tools
 tagplaceholder:=%TAG%
 pkgplaceholder:=%PKG%
 inttemplate:=Template.int
 getsrcs=$(wildcard $(OUTDIR)/$1/Classes/*.uc) $(wildcard $(OUTDIR)/$1/Classes/Include/*.uci)
-getdeps=$(if $(NODEPS),,$($(1:$(TAG)=)_INTDEPS:%=$(OUTDIR)/System/%$(TAG).u))
 
 .SECONDEXPANSION:
 .ONESHELL:
@@ -83,7 +82,7 @@ distclean: clean
 
 $(pkgs): %: $(OUTDIR)/System/%.u
 
-$(OUTDIR)/System/%.u: $(OUTDIR)/%.ini $$(call getsrcs,$$*) $$(call getdeps,$$*) | $(utdirs)
+$(OUTDIR)/System/%.u: $(OUTDIR)/%.ini $$(call getsrcs,$$*) | $(utdirs)
 	@echo "[COMPILE] $* -> .u"
 	mutators=$$(find $(OUTDIR)/$*/Classes/ -name "Mut*.uc")
 	for m in $${mutators}; do
@@ -132,7 +131,7 @@ $(inifiles): $(OUTDIR)/%.ini: $(OUTDIR)/%/Config.make
 	done
 	echo "EditPackages=$*" >> "$@"
 
-$(releasezip): $(ufiles) $(uz2files) $(HELPFILES:%=$(OUTDIR)/Help/$(PROJECT)$(TAG)-%)
+$(releasezip): $(ufiles) $(uz2files) $(HELPFILES:%=$(OUTDIR)/Help/$(PROJECT)-%)
 	@echo "[RELEASE] $@"
 	rm -f $@
 	cd $(OUTDIR)
@@ -154,7 +153,7 @@ $(OUTDIR)/System/%.u.uz2: $(OUTDIR)/System/%.u
 $(OUTDIR)/%.u.uz2: $(OUTDIR)/System/%.u.uz2
 	@mv $(OUTDIR)/System/$*.u.uz2 $@
 
-$(OUTDIR)/Help/$(PROJECT)$(TAG)-%: % | $(OUTDIR)/Help
+$(OUTDIR)/Help/$(PROJECT)-%: % | $(OUTDIR)/Help
 	@cp $^ $@
 
 $(OUTDIR) $(OUTDIR)/Help:
